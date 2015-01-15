@@ -5,9 +5,9 @@
 ########################################################################
 
 # Load the nested sampling code
-source('nested.R')
+source('R/nested.R')
 # Load the priors used in nested sampling
-source("params2priors.R")
+source("R/params2priors.R")
 
 logll <- function(params,par.no,modelfunc,model,dataset,inc.nd,threshold,t.nd,inf.sigma,sigma,transformParams,mumax.prior) {
   # To compute the log likelihood

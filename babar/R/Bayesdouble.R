@@ -5,9 +5,9 @@
 ########################################################################
 
 # Load the nested sampling code
-source('nested.R')
+source('R/nested.R')
 # Load the priors used in nested sampling
-source("params2priors.R")
+source("R/params2priors.R")
 
 logll <- function(params,par.no,modelfunc,model,dataset1,dataset2,inc.nd1,inc.nd2,threshold1,threshold2,t.nd1,t.nd2,inf.sigma1,
                   inf.sigma2,sigma1,sigma2,hyp,transformParams,mumax.prior1,mumax.prior2) {

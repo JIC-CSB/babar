@@ -1,7 +1,7 @@
 \name{Bayesfit}
 \alias{Bayesfit}
 \title{Bayesfit}
-
+\description{Perform Bayesian analysis for fitting a single bacterial growth curve using the Baranyi model.}
 \usage{Bayesfit(data, model, inf.sigma = TRUE, inc.nd = FALSE, sigma = 0.3, 
     threshold = NULL, mumax.prior = "Uniform", mu.mean = NULL, 
     mu.sd = NULL)}

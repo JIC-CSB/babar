@@ -445,8 +445,9 @@
   ### Returns: the dataset minus undetected values, (t,y), and list of times of undetected values, t.nd
 }
 
-Bayescompare <- function(
-  # Perform Bayesian analysis for comparing two bacterial growth curves using the Baranyi model
+Bayescompare <- function
+  ### Perform Bayesian analysis for comparing two bacterial growth curves using the Baranyi model.
+  (
   data1,
   data2,
   ### Datafiles of the two curves to be fitted. This should consist of two columns, the first for time and second for logc.  

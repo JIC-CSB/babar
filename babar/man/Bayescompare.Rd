@@ -1,7 +1,7 @@
 \name{Bayescompare}
 \alias{Bayescompare}
 \title{Bayescompare}
-
+\description{Perform Bayesian analysis for comparing two bacterial growth curves using the Baranyi model.}
 \usage{Bayescompare(data1, data2, hyp, model, inf.sigma1 = TRUE, inf.sigma2 = TRUE, 
     inc.nd1 = FALSE, inc.nd2 = FALSE, sigma1 = 0.3, sigma2 = 0.3, 
     threshold1 = NULL, threshold2 = NULL, mumax.prior1 = "Uniform", 

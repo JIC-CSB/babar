@@ -299,9 +299,9 @@
   ### Returns: the dataset minus undetected values, (t,y), and list of times of undetected values, t.nd
 }
 
-Bayesfit <- function(
-  # Perform Bayesian analysis for fitting a single bacterial growth curve using the Baranyi model
-  data,
+Bayesfit <- function
+  ### Perform Bayesian analysis for fitting a single bacterial growth curve using the Baranyi model.
+  (data,
   ### A datafile of the curve to be fitted. This should consist of two columns, the first for time and second for logc. 
   ### The bacterial concentration should be given in log_10 cfu and there should be at least 2 data points (the first of which 
   ### may be undetected). Undetected y values should be represented by "NA".

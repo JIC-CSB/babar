@@ -256,7 +256,7 @@ nestedSampling <- function
   ### affect how long it takes to run nested sampling. Larger values
   ### will terminate sooner but may give inaccurate evidence
   ### scores. This is the expected maximum remaining contribution to
-  ### logZ from the points in the active set. \Delta Z_i = L_max*X_i <
+  ### logZ from the points in the active set. delta Z_i = L_max*X_i <
   ### tolerance.
 ) {
   

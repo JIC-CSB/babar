@@ -4,12 +4,7 @@
 # (c) Lydia Rickett
 ########################################################################
 
-# Load the nested sampling code
-source('R/nested.R')
-# Load the priors used in nested sampling
-source("R/params2priors.R")
-
-logll <- function(params,par.no,modelfunc,model,dataset,inc.nd,threshold,t.nd,inf.sigma,sigma,transformParams,mumax.prior) {
+.logll <- function(params,par.no,modelfunc,model,dataset,inc.nd,threshold,t.nd,inf.sigma,sigma,transformParams,mumax.prior) {
   # To compute the log likelihood
   
   t <- dataset$t; y <- dataset$y
@@ -52,7 +47,7 @@ logll <- function(params,par.no,modelfunc,model,dataset,inc.nd,threshold,t.nd,in
   return (llhood)
 }
 
-generateTransform <- function(dataset,par.no,model,inc.nd,inf.sigma,mumax.prior,mu.mean,mu.sd) {
+.generateTransform <- function(dataset,par.no,model,inc.nd,inf.sigma,mumax.prior,mu.mean,mu.sd) {
   # A wrap around to include other input
   
   t <- dataset$t; y <- dataset$y
@@ -142,7 +137,7 @@ generateTransform <- function(dataset,par.no,model,inc.nd,inf.sigma,mumax.prior,
 # Functions for growth models:
 ###
 
-linear <- function(t,params) {
+.linear <- function(t,params) {
   # Compute y(t) = ln(x(t)) using the linear model (2-parameters)
   #
   # Arguments: vector t of times and parameters par1 = y0 and par3 = mumax
@@ -154,7 +149,7 @@ linear <- function(t,params) {
   return (y=y)
 }
 
-logistic <- function(t,params) {
+.logistic <- function(t,params) {
   # Compute y(t) = ln(x(t)) using the logistic model (3-parameters, no lag phase)
   #
   # Arguments: vector t of times and parameters par1 = y0, par2 = ymax and par3 = mumax
@@ -172,7 +167,7 @@ logistic <- function(t,params) {
   return (y=y)
 }
 
-Bar3par <- function(t,params) {
+.Bar3par <- function(t,params) {
   # Compute y(t) = ln(x(t)) using the 3-parameter Baranyi model (no stationary phase)
   #
   # Arguments: vector t of times and parameters par1 = y0, par3 = mumax and par4 = h0
@@ -206,7 +201,7 @@ Bar3par <- function(t,params) {
   return (y=y)
 }
 
-Bar4par <- function(t,params) {
+.Bar4par <- function(t,params) {
   # Compute y(t) = ln(x(t)) using the 4-parameter Baranyi model
   #
   # Arguments: vector t of times and parameters par1 = y0, par2 = ymax, par3 = mumax and par4 = h0
@@ -243,7 +238,7 @@ Bar4par <- function(t,params) {
   return (y=y)
 }
 
-Bar6par <- function(t,params) {
+.Bar6par <- function(t,params) {
   # Compute y(t) = ln(x(t)) using the 6-parameter Baranyi model
   #
   # Arguments: vector t of times and parameters par1 = y0, par2 = ymax, par3 = mumax, par4 = lambda, par5 = nu and par6 = m  
@@ -280,7 +275,7 @@ Bar6par <- function(t,params) {
   return (y=y)
 }
 
-sortdata <- function(data,inc.nd) {
+.sortdata <- function(data,inc.nd) {
   # Sort out data for use in nested sampling
   
   t <- numeric(0)
@@ -346,19 +341,19 @@ Bayesfit <- function(
   
   if (model == "linear") {
     par.no <- 2
-    modelfunc <- linear
+    modelfunc <- .linear
   } else if (model == "logistic") {
     par.no <- 3
-    modelfunc <- logistic
+    modelfunc <- .logistic
   } else if (model == "Bar3par") {
     par.no <- 3
-    modelfunc <- Bar3par
+    modelfunc <- .Bar3par
   } else if (model == "Bar4par") {
     par.no <- 4
-    modelfunc <- Bar4par
+    modelfunc <- .Bar4par
   } else if (model == "Bar6par") {
     par.no <- 6
-    modelfunc <- Bar6par
+    modelfunc <- .Bar6par
   }
   
   if (nrow(data) == 1) {
@@ -370,7 +365,7 @@ Bayesfit <- function(
     inf.sigma <- FALSE
   }
   
-  sort <- sortdata(data,inc.nd)
+  sort <- .sortdata(data,inc.nd)
   data <- sort$ty
   t <- data[,1]; y <- log(10)*data[,2] # Convert y from log_10 to natural log for use in model
   if (length(t) ==1) {
@@ -399,9 +394,9 @@ Bayesfit <- function(
   tol <- 0.1 # Set the termination tolerance
   
   # Define transformed priors and log likelihood function
-  transformParams <- generateTransform(dataset,par.no,model,inc.nd,inf.sigma,mumax.prior,mu.mean,mu.sd)
+  transformParams <- .generateTransform(dataset,par.no,model,inc.nd,inf.sigma,mumax.prior,mu.mean,mu.sd)
   logllfun <- function(params) {
-    return(logll(params,par.no,modelfunc,model,dataset,inc.nd,threshold,t.nd,inf.sigma,sigma,transformParams,mumax.prior))
+    return(.logll(params,par.no,modelfunc,model,dataset,inc.nd,threshold,t.nd,inf.sigma,sigma,transformParams,mumax.prior))
   }
   
   # Call the nested sampling routine, which returns the posterior, log evidence & error, logweights and parameter means 

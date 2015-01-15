@@ -4,12 +4,7 @@
 # (c) Lydia Rickett
 ########################################################################
 
-# Load the nested sampling code
-source('R/nested.R')
-# Load the priors used in nested sampling
-source("R/params2priors.R")
-
-logll <- function(params,par.no,modelfunc,model,dataset1,dataset2,inc.nd1,inc.nd2,threshold1,threshold2,t.nd1,t.nd2,inf.sigma1,
+.logll <- function(params,par.no,modelfunc,model,dataset1,dataset2,inc.nd1,inc.nd2,threshold1,threshold2,t.nd1,t.nd2,inf.sigma1,
                   inf.sigma2,sigma1,sigma2,hyp,transformParams,mumax.prior1,mumax.prior2) {
   
   t1 <- dataset1$t1; y1 <- dataset1$y1
@@ -99,7 +94,7 @@ logll <- function(params,par.no,modelfunc,model,dataset1,dataset2,inc.nd1,inc.nd
   return (llhood)
 }
 
-generateTransform <- function(dataset1,dataset2,par.no,model,inc.nd1,inc.nd2,inf.sigma1,inf.sigma2,hyp,
+.generateTransform <- function(dataset1,dataset2,par.no,model,inc.nd1,inc.nd2,inf.sigma1,inf.sigma2,hyp,
                               mumax.prior1,mu.mean1,mu.sd1,mumax.prior2,mu.mean2,mu.sd2) {
   
   t1 <- dataset1$t1; t2 <- dataset2$t2; y1 <- dataset1$y1; y2 <- dataset2$y2
@@ -325,7 +320,7 @@ generateTransform <- function(dataset1,dataset2,par.no,model,inc.nd1,inc.nd2,inf
 # Functions for growth models:
 ###
 
-linear <- function(t,params) {
+.linear <- function(t,params) {
   # Compute y(t) = ln(x(t)) using the linear model (2-parameters)
   #
   # Arguments: vector t of times and parameters par1 = y0 and par3 = mumax
@@ -337,7 +332,7 @@ linear <- function(t,params) {
   return (y=y)
 }
 
-logistic <- function(t,params) {
+.logistic <- function(t,params) {
   # Compute y(t) = ln(x(t)) using the logistic model (3-parameters, no lag phase)
   #
   # Arguments: vector t of times and parameters par1 = y0, par2 = ymax and par3 = mumax
@@ -355,7 +350,7 @@ logistic <- function(t,params) {
   return (y=y)
 }
 
-Bar3par <- function(t,params) {
+.Bar3par <- function(t,params) {
   # Compute y(t) = ln(x(t)) using the 3-parameter Baranyi model (no stationary phase)
   #
   # Arguments: vector t of times and parameters par1 = y0, par3 = mumax and par4 = h0
@@ -389,7 +384,7 @@ Bar3par <- function(t,params) {
   return (y=y)
 }
 
-Bar4par <- function(t,params) {
+.Bar4par <- function(t,params) {
   # Compute y(t) = ln(x(t)) using the 4-parameter Baranyi model
   #
   # Arguments: vector t of times and parameters par1 = y0, par2 = ymax, par3 = mumax and par4 = h0
@@ -426,7 +421,7 @@ Bar4par <- function(t,params) {
   return (y=y)
 }
 
-sortdata <- function(data,inc.nd) {
+.sortdata <- function(data,inc.nd) {
   # Sort out data for use in nested sampling
   
   t <- numeric(0)
@@ -516,16 +511,16 @@ Bayescompare <- function(
   
   if (model == "linear") {
     par.no <- 2
-    modelfunc <- linear
+    modelfunc <- .linear
   } else if (model == "logistic") {
     par.no <- 3
-    modelfunc <- logistic
+    modelfunc <- .logistic
   } else if (model == "Bar3par") {
     par.no <- 3
-    modelfunc <- Bar3par
+    modelfunc <- .Bar3par
   } else if (model == "Bar4par") {
     par.no <- 4
-    modelfunc <- Bar4par
+    modelfunc <- .Bar4par
   }
   
   if (nrow(data1) == 1) {
@@ -542,7 +537,7 @@ Bayescompare <- function(
     warning("inferring noise level sigma is not recommended with only 2 data points, sigma2 has been prescribed as 0.3")
   }
 
-  sort1 <- sortdata(data1,inc.nd1); sort2 <- sortdata(data2,inc.nd2)
+  sort1 <- .sortdata(data1,inc.nd1); sort2 <- .sortdata(data2,inc.nd2)
   data1 <- sort1$ty; data2 <- sort2$ty
   t1 <- data1[,1]; y1 <- log(10)*data1[,2] # Convert y from log_10 to natural log for use in model
   t2 <- data2[,1]; y2 <- log(10)*data2[,2]
@@ -600,10 +595,10 @@ Bayescompare <- function(
   tol <- 0.1 # Set the termination tolerance
 
   # Define transformed priors and log likelihood function
-  transformParams <- generateTransform(dataset1,dataset2,par.no,model,inc.nd1,inc.nd2,inf.sigma1,inf.sigma2,hyp,
+  transformParams <- .generateTransform(dataset1,dataset2,par.no,model,inc.nd1,inc.nd2,inf.sigma1,inf.sigma2,hyp,
                                        mumax.prior1,mu.mean1,mu.sd1,mumax.prior2,mu.mean2,mu.sd2)
   logllfun <- function(params) { 
-    return(logll(params,par.no,modelfunc,model,dataset1,dataset2,inc.nd1,inc.nd2,threshold1,threshold2,t.nd1,t.nd2,inf.sigma1,
+    return(.logll(params,par.no,modelfunc,model,dataset1,dataset2,inc.nd1,inc.nd2,threshold1,threshold2,t.nd1,t.nd2,inf.sigma1,
                  inf.sigma2,sigma1,sigma2,hyp,transformParams,mumax.prior1,mumax.prior2))
   }
   

@@ -31,7 +31,7 @@ CauchyPrior = function(u, location, scale) {
 }
 
 ExponentialPrior = function(u, rate) { ## mean = 1/rate
-  return(-log(u)/a)
+  return(-log(u)/rate)
 }
 
 WeibullPrior = function(u, shape, scale) {

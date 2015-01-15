@@ -4,7 +4,7 @@
 ########################################################################
 ##source("params2priors.R")
 
-logPlus <- function(a, b) {
+.logPlus <- function(a, b) {
   # Sum a and b via their logarithms, such that if:
   # a = log(x) and b = log(y)
   # logPlus(a, b) returns log(x + y)
@@ -16,7 +16,7 @@ logPlus <- function(a, b) {
   return(sum)
 }
 
-makeStep <- function(current.values, step.vector) { # Make MC step
+.makeStep <- function(current.values, step.vector) { # Make MC step
   # Make random step in parameter space
   #
   # Args:
@@ -34,14 +34,14 @@ makeStep <- function(current.values, step.vector) { # Make MC step
   return(current.values + step.vector * runif(n, -1, 1))
 }
 
-makeBoundedStep <- function(current.values, step) {
+.makeBoundedStep <- function(current.values, step) {
   # Make step in parameter space. If step exceeds bounds, instead pick point in
   # space randomly chosen using uniform distribution.
   #
   # Args:
   #   current.values: Vector of parameter values
   #   
-  step.attempt <- makeStep(current.values, step)
+  step.attempt <- .makeStep(current.values, step)
   
   ## print(c(current.values, step, step.attempt))
   stopifnot(length(current.values) == length(step))## Note to self: Need to make length(lower.bounds) depend on numParams
@@ -61,7 +61,7 @@ makeBoundedStep <- function(current.values, step) {
   return(step.attempt)
 }
 
-makeBoundedSingleStep <- function(current.value, step) {
+.makeBoundedSingleStep <- function(current.value, step) {
   # Make a step of single (scalar) parameter value. If step takes us outside bounds,
   # pick point in space from uniform distribution within bounds
   #
@@ -81,7 +81,7 @@ makeBoundedSingleStep <- function(current.value, step) {
   return(step.attempt)
 }
 
-ballMcmcStep <- function( # Make MCMC step in parameter space for all parameters simultaneously
+.ballMcmcStep <- function( # Make MCMC step in parameter space for all parameters simultaneously
   ### Make single MCMC step from current.values as follows:
   ### 1) Attempt step in all parameter directions simultaneously
   ### 2) If step is successful (ll bigger than llMin), note this
@@ -94,7 +94,7 @@ ballMcmcStep <- function( # Make MCMC step in parameter space for all parameters
   steps 
   ### Vector of step values.
 ) {
-  candidate <- makeBoundedStep(current.values, steps)
+  candidate <- .makeBoundedStep(current.values, steps)
   
   ## print(c(candidate, "********", current.values, steps))
   if (llFun(candidate) > llMin) {
@@ -112,7 +112,7 @@ ballMcmcStep <- function( # Make MCMC step in parameter space for all parameters
   ###    new.values: a vector of the new parameter values after the step
 }
 
-makeMcmcStep <- function( # Make MCMC step in parameter space one parameter at a time
+.makeMcmcStep <- function( # Make MCMC step in parameter space one parameter at a time
   ### Make single MCMC step from current.values as follows:
   ### 1) Attempt step in each parameter direction
   ### 2) If step is successful (ll bigger than llMin), note this
@@ -131,7 +131,7 @@ makeMcmcStep <- function( # Make MCMC step in parameter space one parameter at a
   for (i in 1:n) {
     candidate <- current.values
     # Attempt step along one axis in parameter space
-    candidate[i] <- makeBoundedSingleStep(current.values[i], steps[i])
+    candidate[i] <- .makeBoundedSingleStep(current.values[i], steps[i])
     if(llFun(candidate) > llMin) {
       current.values <- candidate
       accepted[i] = TRUE
@@ -153,7 +153,7 @@ ballExplore <- function(current.values, steps, llMin, llFun) {
   accepted <- vector()
   for (k in 1:m) {
     for (i in 1:msub) {
-      ret <- ballMcmcStep(current.values, llFun, llMin, steps)
+      ret <- .ballMcmcStep(current.values, llFun, llMin, steps)
       current.values <- ret$new.values
       accepted <- cbind(accepted, ret$accepted)
     }
@@ -170,7 +170,7 @@ ballExplore <- function(current.values, steps, llMin, llFun) {
   return(list(new.values=ret$new.values, new.steps=steps, new.ll=llFun(ret$new.values)))
 }
 
-explore <- function(current.values, steps, llMin, llFun) {
+.explore <- function(current.values, steps, llMin, llFun) {
   # Explore parameter space around supplied point
   # returns new point and new step size
   msub <- 20
@@ -179,7 +179,7 @@ explore <- function(current.values, steps, llMin, llFun) {
   for(k in 1:m) {
     accepted <- vector()
     for(i in 1:msub) {
-      ret <- makeMcmcStep(current.values, llFun, llMin, steps)
+      ret <- .makeMcmcStep(current.values, llFun, llMin, steps)
       current.values <- ret$new.values
       accepted <- cbind(accepted, ret$accepted)
     }
@@ -203,14 +203,14 @@ explore <- function(current.values, steps, llMin, llFun) {
   return(list(new.values=current.values, new.step=steps, new.ll=llFun(current.values)))
 }
 
-generatePriorSamples <- function( # Generate prior samples
+.generatePriorSamples <- function( # Generate prior samples
   ### Generate a set of prior samples from a unit hypercube as recommended by Skilling
   n.samples, 
   ### The number of prior samples to be generated.
   numberOfParameters
   ### The number of parameters to be inferred
 )  {
-  prior.samples <- replicate(n.samples,  generateUnitHyperCube(numberOfParameters))
+  prior.samples <- replicate(n.samples,  .generateUnitHyperCube(numberOfParameters))
   
   ## If we only have a 1d problem, we need to ensure that we return a matrix of
   ## suitable dimensions, by default we end up with a vector, where ncol returns
@@ -223,7 +223,7 @@ generatePriorSamples <- function( # Generate prior samples
   ###   Matrix of prior samples, of dimension n.samples x n.params.
 }
 
-generateUnitHyperCube <- function( # Generate U(0,1) samples
+.generateUnitHyperCube <- function( # Generate U(0,1) samples
   ### Generates n samples drawn from the uniform distribution U(0,1)
   n
   ### The number of parameters in the problem
@@ -234,10 +234,10 @@ generateUnitHyperCube <- function( # Generate U(0,1) samples
   ###   A vector of values drawn from the uniform distribution
 }
 
-nestedSampling <- function(
-  # Perform nested sampling for the given model (expressed through the log
-  # likelihood function).
-  llFun,
+nestedSampling <- function
+  ### Perform nested sampling for the given model (expressed through the log
+  ### likelihood function).
+  (llFun,
   ### The loglikelihood function, which should be of the form:
   ### llFun(params) where params is a vector containing a single
   ### instance of parameters, and should return the log likelihood for
@@ -260,7 +260,7 @@ nestedSampling <- function(
   ### tolerance.
 ) {
   
-  prior.samples <- generatePriorSamples(prior.size, numberOfParameters)
+  prior.samples <- .generatePriorSamples(prior.size, numberOfParameters)
   # Calculate the log likelihoods for the prior samples
   ll.values <- apply(prior.samples, 1, llFun)
   evaluated.samples = cbind(ll.values, prior.samples)
@@ -298,7 +298,7 @@ nestedSampling <- function(
     ## llMin <- min(ordered.samples[,1])
     llMin <- ordered.samples[1,1]
     log.weight[samplesCounter] = llMin + log.width
-    logZnew <- logPlus(logZ, log.weight[samplesCounter])
+    logZnew <- .logPlus(logZ, log.weight[samplesCounter])
     ## worst.weight <- log.width + worst[1]
     worst.weight <- log.weight[samplesCounter]
     ## print(c("*********", llMin, worst.weight, logZnew))
@@ -351,7 +351,7 @@ nestedSampling <- function(
   for (i in 1:prior.size) {
     lL <- ordered.samples[i, 1]
     log.weight[i + samplesCounter] = lw + lL
-    logZ <- logPlus(logZ, log.weight[i + samplesCounter])
+    logZ <- .logPlus(logZ, log.weight[i + samplesCounter])
   }
   
   logZerror <- sqrt(entropy) / prior.size
@@ -414,7 +414,7 @@ nestedSampling <- function(
   ### entropy: The information --- the natural logarithmic measure of the prior-to-posterior shrinkage.
 }
 
-staircaseSampling = function(
+.staircaseSampling = function(
   ### Generate a set of equally weighted posterior samples from the output of nested sampling  
   posterior
   ### Matrix from the output of nested sampling. Should have log weights
@@ -468,7 +468,7 @@ getEqualSamples = function(
   ### generated from the posterior it can. Likewise if n is greater than
   ### this maximum number of samples.
 ) {
-  eqSamps = staircaseSampling(posterior)
+  eqSamps = .staircaseSampling(posterior)
   if (n > nrow(eqSamps) | is.infinite(n)) {
     return(eqSamps)
   } else {

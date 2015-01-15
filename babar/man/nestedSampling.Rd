@@ -1,7 +1,8 @@
 \name{nestedSampling}
 \alias{nestedSampling}
 \title{nestedSampling}
-
+\description{Perform nested sampling for the given model (expressed through the log
+likelihood function).}
 \usage{nestedSampling(llFun, numberOfParameters, prior.size, transformParams, 
     exploreFn = ballExplore, tolerance = 0.1)}
 \arguments{

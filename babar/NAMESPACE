@@ -1,3 +1,4 @@
 export(nestedSampling)
 export(Bayesfit)
 export(Bayescompare)
+export(UniformPrior)

@@ -1,12 +1,24 @@
 library(babar)
 
+
+# Comparing distributions with nested sampling
+
+#A common problem in the analysis of experimental data
+
+# Let's first generate some data. We'll set a number of samples:
+
 n.samples <- 500
+
+# Then set two different means and standard deviations:
 
 sd.1 <- 2
 mean.1 <- 0
 
 sd.2 <- 2
 mean.2 <- 1
+
+# Now we'll generate three sets of samples. Two have the same mean and
+# standard deviation and the third is different.
 
 data.a <- rnorm(n.samples, mean.1, sd.1)
 data.b <- rnorm(n.samples, mean.1, sd.1)

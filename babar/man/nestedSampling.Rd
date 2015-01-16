@@ -39,7 +39,7 @@ parameterVariances: A vector of the variance of each parameter, length = no. of 
 
 entropy: The information --- the natural logarithmic measure of the prior-to-posterior shrinkage.}
 
-\author{Lydia Rickett, Matthew Hartley and Nick Pullen}
+\author{Lydia Rickett, Matthew Hartley, Richard Morris and Nick Pullen}
 
 
 

@@ -71,7 +71,7 @@ model. Each column represents a different posterior sample.
 fit.y1mean and fit.y2mean: Vectors of fitted model points, y1 and y2, using the mean of the posterior parameter samples in the  
 model.}
 
-\author{Lydia Rickett, Matthew Hartley and Nick Pullen}
+\author{Lydia Rickett, Matthew Hartley, Richard Morris and Nick Pullen}
 
 
 

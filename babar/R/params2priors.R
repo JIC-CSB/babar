@@ -10,12 +10,30 @@
 # }
 #########################################################
 
-UniformPrior = function(u, lowerBound, upperBound) {
+UniformPrior = function
+### Generate samples from uniform distribution
+(u,
+### Input scalar/vector of values between 0 and 1
+ lowerBound,
+### lower bound
+ upperBound
+### upper bound
+ ) {
   return(lowerBound + u*(upperBound - lowerBound))
+### Samples from uniform distribution within given bounds
 }
 
-GaussianPrior = function(u, mean, sd) {
+GaussianPrior = function
+### Generate samples from normal distribution
+(u,
+### Input scalar/vector of values between 0 and 1
+ mean,
+### mean
+ sd
+### standard deviation
+ ) {
   return(mean + sd*qnorm(u))
+### Samples from normal distribution
 }
 
 LogNormalPrior = function(u, meanlog, sdlog) {

@@ -48,7 +48,7 @@ posterior sample.
 
 fit.ymean: A vector of fitted model points, y, using the mean of the posterior parameter samples in the model.}
 
-\author{Lydia Rickett, Matthew Hartley and Nick Pullen}
+\author{Lydia Rickett, Matthew Hartley, Richard Morris and Nick Pullen}
 
 
 

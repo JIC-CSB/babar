@@ -10,11 +10,12 @@ Type: \tab Package\cr
 Title: \tab Bayesian Bacterial Growth Curve analysis in R\cr
 Version: \tab 1.0\cr
 Date: \tab 2014-11-13\cr
-Author: \tab Lydia Rickett, Matthew Hartley and Nick Pullen\cr
+Author: \tab Lydia Rickett, Matthew Hartley, Richard Morris and Nick Pullen\cr
 Maintainer: \tab Matthew Hartley <Matthew.Hartley@jic.ac.uk>\cr
-License: \tab GPL-2\cr}
+License: \tab GPL-2\cr
+Depends: \tab knitr\cr}
 }
-\author{Lydia Rickett, Matthew Hartley and Nick Pullen}
+\author{Lydia Rickett, Matthew Hartley, Richard Morris and Nick Pullen}
 
 \keyword{ package }
 

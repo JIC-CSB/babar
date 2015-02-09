@@ -354,7 +354,7 @@ nestedSampling <- function
     logZ <- .logPlus(logZ, log.weight[i + samplesCounter])
   }
   
-  logZerror <- sqrt(entropy) / prior.size
+  logZerror <- sqrt(entropy / prior.size)
   # DEBUG cat("logZerror",logZerror,"entropy",entropy,"\n")
   # DEBUG cat("logweight",log.weight,"len",length(log.weight),"\n")
   

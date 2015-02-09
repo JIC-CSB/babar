@@ -1,15 +1,3 @@
-#########################################################
-## This function is only here so that the tests work!
-## Hopefully user defined functions will redefine this so 
-## their code still runs fine with their own transformations.
-#########################################################
-# transformParams = function(uParams) {
-#   tParams = numeric(length = length(uParams))
-#   tParams = UniformPrior(uParams, 0, 2.0)
-#   return(tParams)
-# }
-#########################################################
-
 UniformPrior = function
 ### Generate samples from uniform distribution
 (u,

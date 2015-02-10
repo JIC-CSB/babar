@@ -1,0 +1,257 @@
+\documentclass[11pt,a4paper,usenames,dvipsnames]{article}
+\linespread{1.1}
+
+\usepackage[headings]{fullpage}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{arydshln}
+\usepackage{framed}
+\usepackage{hyperref}
+\usepackage{listings}
+\pagestyle{fancyplain}
+%\lfoot{Contact: lydia.rickett@jic.ac.uk}
+\lhead{Worksheet 1}
+%\rfoot{\today}
+
+% <<setup, include=FALSE>>=
+% opts_chunk$set(fig.show='hide')
+% @
+
+\begin{document}
+
+%%%%%
+% Title
+\begin{center}
+{\LARGE \textbf{Worksheet 1; Fitting a single data curve using the function \emph{Bayesfit}}} \\
+%\textbf{Lydia Rickett, Contact: Lydia.Rickett@sainsbury-laboratory.ac.uk}
+\end{center}
+%%%%
+
+% \begin{itemize}
+
+% \item Open R Studio under programs and navigate to the shared folder (using ``File'' and ``Open file...'' in the toolbar at the top). In the folder ``Program'' open the file \emph{example1.R}. Begin by clicking on ``Session'' on the toolbar and then ``Set Working Directory'' and ``To Source File Location''. This makes sure that R is working in the same folder as our file.
+
+% \end{itemize}
+
+% \begin{framed}
+% USEFUL COMMANDS
+
+% \begin{itemize}
+% \renewcommand{\labelitemi}{$\ast$}
+
+% \item When running code, we can either run one line of code at a time by placing the cursor on the line and clicking on ``Run'' on the top right of the sub window (or pressing Ctrl+Enter) or we can run everything by clicking on ``Source'' (or Ctrl+Alt+R).
+
+% \item \verb|<-| is the assignment operator in R (you can use $=$ instead if you prefer).
+
+% \item {\color{ForestGreen} 
+% \begin{verbatim}
+% # This is a comment
+% \end{verbatim}
+% }
+% (Green) lines starting with a `` \verb|#| '' symbol are commented out and do not run. To uncomment (or comment) lines so that they run (or do not run), either remove (or add) the `` \verb|#| '' symbols, or place you cursor at the line or highlight the section you wish to change and click on ``Code'' on the toolbar at the top and then ``Comment/Uncomment Lines'' (or press Ctrl+Shift+C).
+
+% \item The `` \verb|$| '' symbol is used to extract data from a data frame. For instance \verb|collectionofdata$times| picks the data \verb|times| from the data frame \verb|collectionofdata|.
+
+% \end{itemize}
+
+% For more help with R, visit \url{https://support.rstudio.com/hc/en-us/articles/200552336-Getting-Help-with-R}.
+% A complete list of shorcuts can be found at \url{https://support.rstudio.com/hc/en-us/articles/200711853-Keyboard-Shortcuts}.
+
+% \end{framed}
+
+\section{Fitting a growth curve}
+
+Load the library \emph{babar} and then we can import and plot some experimental data \emph{B092\_1.csv}.
+
+<<loadandplot, fig.show='hide'>>=
+library(babar)
+
+B092_1.file <- system.file("extdata", "B092_1.csv", package = "babar")
+B092_1.data <- read.csv(B092_1.file, header=TRUE, sep=",",
+                na.strings=c("ND","NA"))
+plot(B092_1.data,ylim=c(0,10))
+@ 
+
+\subsection{Estimating the noise level}
+
+We next use Bayesian analysis to fit a curve to the data using the \emph{Bayesfit} function. We start by using the 4 parameter Baranyi model, Bar4par, assuming that the noise level of the data is the default value, 0.3.
+
+Run the line to perform this command. This may take a minute or so to complete. Some typical output is shown below; this will appear in the command window.
+
+<<runBar4parnoise03>>=
+set.seed(11) ## for reproducibility
+results_Bar4par <- Bayesfit(B092_1.data,model="Bar4par",inf.sigma=FALSE)
+@ 
+
+Extract a vector of mean fitted points from the results and plot them alongside our data.
+
+<<extractandplot, eval=FALSE>>=
+t <- results_Bar4par$fit.t; y <- results_Bar4par$fit.ymean
+lines(t,y,col="black",lwd=2)
+@
+
+Run this next line to perform the analysis with a different noise level, extracting and plotting the results as before, to see how the results change - you could try plotting using a different colour, making it easier to compare your results.
+
+<<runBar4parnoise05, eval=FALSE>>=
+set.seed(11) ## for reproducibility
+results_Bar4par <- Bayesfit(B092_1.data,model="Bar4par",inf.sigma=FALSE,
+                            sigma=0.5)
+@
+
+Try changing the noise level manually to see how the results change again.
+
+Repeat the analysis with the noise level inferred to see the difference.
+
+<<runBar4parnoiseinf, eval=FALSE>>=
+set.seed(11) ## for reproducibility
+results_Bar4par <- Bayesfit(B092_1.data,model="Bar4par")
+@
+
+\subsection{Extension: fitting undetected data points}
+
+Next, we will look at fitting some data with undetected points; these are points with bacterial concentration below the level (or ``threshold'') that we were able to detect using the experimental method.
+
+Run these lines to import and plot curve \emph{B119\_5.csv}, which contains undetected points, choosing the threshold value 1.3.
+
+<<loadandplotundet, eval=FALSE>>=
+B119_5.file <- system.file("extdata", "B119_5.csv", package = "babar")
+B119_5.data <-read.csv(B119_5.file, header=TRUE, sep=",",
+                na.strings=c("ND","NA"))
+plot(B119_5.data,ylim=c(0,10))
+threshold = 1.3
+for (i in 1:nrow(B119_5.data)){
+  if (is.na(B119_5.data[i,2])) {
+    points(B119_5.data[i,1], threshold, pch=16)
+  }
+}
+@
+
+Run this line to perform the analysis including undetected points with threshold 1.3. Extract and plot the results as before.
+
+<<runBar4parundet, eval=FALSE>>=
+set.seed(11) ## for reproducibility
+results_Bar4par <- Bayesfit(B119_5.data, model="Bar4par", inc.nd=TRUE,
+                            threshold=1.3)
+@
+
+Repeat the above steps with a different threshold value to see how this affects the results.
+
+\section{Performing model comparison}
+
+The available models are summarised in table \ref{tab:models}.
+
+Start a new plot with the original experimental dataset (B092\_1). An example is shown below of fitting using the different models.
+
+<<runlogistic, results='markup'>>=
+set.seed(11) ## for reproducibility
+results_logistic <- Bayesfit(B092_1.data,model="logistic",inf.sigma=FALSE)
+@
+
+By running the relevant lines, extract and plot the curves fitted by the various models.
+
+<<extractandplotlogistic, eval=FALSE>>=
+t <- results_logistic$fit.t; y <- results_logistic$fit.ymean
+plot(B092_1.data,ylim=c(0,10))
+lines(t,y,col="green",lwd=2)
+@
+
+Extract the log evidences for a model by running a line like that below.
+
+<<logevidlogistic>>=
+logevidence_logistic <- results_logistic$logevidence
+@
+
+Calculate and print the results for the Bayes' factor for the 4 parameter Baranyi versus logistic model. The results can be interpreted using table \ref{tab:Jeffreys}. Some typical output, similar to that which will appear in the command window, is shown below.
+
+<<logevidence4par, include=FALSE>>=
+logevidence_Bar4par <- results_Bar4par$logevidence
+@
+
+<<Bayes4parvslog, echo=1>>=
+Bayes <- exp(logevidence_Bar4par)/exp(logevidence_logistic)
+cat("Bayes' factor for first vs. second model = ", Bayes, '\n')
+cat("Log Bayes' factor = ", log(Bayes), '\n')
+@
+
+Try changing the models that we are comparing (by changing the model names) to see how the Bayes' factor changes. Which is the preferred model for the data? To what degree is it preferred over the second most likely model?
+
+\begin{table}[htp]
+\centering
+\def\arraystretch{1.5}
+\begin{tabular}{| c | c |}
+\hline
+Model name & Parameters \\
+\hline \hline
+linear & $y_0$, $\mu_{max}$ \\
+\hline
+logistic & $y_0$, $y_{max}$, $\mu_{max}$ \\
+\hline
+Bar3par & $y_0$, $\mu_{max}$, $h_0$ \\
+\hline
+Bar4par & $y_0$, $y_{max}$, $\mu_{max}$, $h_0$ \\
+\hline
+Bar6par & $y_0$, $y_{max}$, $\mu_{max}$, $\lambda$, $\nu$, $m$ \\
+\hline
+\end{tabular}
+\caption{The bacterial growth models available in the function. $y_0=\log_{10}(x_0)$, where $x_0$ is the initial bacterial concentration, $y_{max}=\log_{10}(x_{max})$ where $x_{max}$ is the maximum of the bacterial concentration, $\mu_{max}$ is the maximum specific growth rate, $\lambda$ is the lag time, $h_0=\mu_{max} \lambda$, and $\nu$ and $m$ control the curvatures from the lag to exponential phase and exponential to stationary phase respectively.}
+\label{tab:models}
+\end{table}
+
+\begin{table}[htp]
+\centering
+\def\arraystretch{1.5}
+\begin{tabular}{| c | c |}
+\hline
+Bayes' factor & Strength of evidence for/against first model or hypothesis \\
+\hline \hline
+$10$ to $\infty$ & Strong for \\
+\hdashline[1pt/5pt]
+$3$ to $10$ & Substantial for \\
+ \hdashline[1pt/5pt]
+$1$ to $3$ & Barely worth mentioning for \\
+ \hdashline
+$1/3$ to $1$ & Barely worth mentioning against \\
+\hdashline[1pt/5pt]
+$0.1$ to $1/3$ & Substantial against \\
+\hdashline[1pt/5pt]
+$-\infty$ to $0.1$ & Strong against \\
+\hline
+\end{tabular}
+\caption{The regions of Jeffreys' scale for interpreting the Bayes' factor.}
+\label{tab:Jeffreys}
+\end{table}
+%% \begin{tabular}{| c | c |}
+%%     \hline
+%%     $2\ln\mathcal B_{12}$ & Evidence against $H_2$\\
+%%     \hline
+%%     $0\text{--}2$ & Hardly worth mentioning\\
+%%     $2\text{--}6$ & Has some substance\\
+%%     $6\text{--}10$ & Strong\\
+%%     $> 10$ & Very strong\\
+%%     \hline
+%% \end{tabular}
+
+\begin{framed}
+
+\textbf{Note:} We can also use the model comparison techniques to calculate the Bayes' factor for the noise level inferred versus prescribed.
+
+\end{framed}
+
+%% \section{Extension: plotting posterior samples}
+
+%% The last section of \emph{example1.R} plots the curves fitted by the posterior parameter samples. These curves are coloured by their log likelihood values (with darker curves having the highest likelihood). The curves are plotted alongside the data and the curve fitted using the mean values of the parameter samples.
+
+%% \begin{itemize}
+
+%% \item Run the lines in the section \emph{``Plot the curves fitted by posterior samples''} to plot the posterior curves.
+
+%% \item Try changing the results that we plot to see how the plot changes.
+
+%% \end{itemize}
+
+%% \newpage
+%% {\color{white}.}
+
+%% Compile in R using knit("worksheet1.Rnw")
+
+\end{document}

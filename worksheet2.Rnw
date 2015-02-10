@@ -1,0 +1,185 @@
+\documentclass[11pt,a4paper,usenames,dvipsnames]{article}
+\linespread{1.1}
+
+\usepackage[headings]{fullpage}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{arydshln}
+\usepackage{framed}
+\usepackage{hyperref}
+\usepackage{listings}
+\pagestyle{fancyplain}
+%\lfoot{Contact: lydia.rickett@jic.ac.uk}
+\lhead{Worksheet 2}
+%\rfoot{\today}
+
+% <<setup, include=FALSE>>=
+% opts_chunk$set(fig.show='hide')
+% @
+
+\begin{document}
+
+%%%%%
+% Title
+\begin{center}
+{\LARGE \textbf{Worksheet 2; Comparing two data curves using the function \emph{Bayescompare}}} \\
+%\textbf{Lydia Rickett, Contact: Lydia.Rickett@sainsbury-laboratory.ac.uk}% May need to change email address!
+\end{center}
+%%%%3
+
+%% \begin{itemize}
+
+%% \item In R studio open the file \emph{example2.R} in the folder ``Program''.
+
+%% \end{itemize}
+
+\section{Comparing two data curves with many points}
+
+In this example we begin by importing two sets of experimental data with many points.
+
+Load the \emph{babar} library and import and plot the data \emph{LmH\_411.csv} and \emph{M126\_50.csv} by running the lines below.
+
+<<loadandplotmanypoints, fig.show='hide'>>=
+library(babar)
+
+LmH_411.file <- system.file("extdata", "LmH_411.csv", package = "babar")
+LmH_411.data <- read.csv(LmH_411.file, header=TRUE, sep =",",
+                 na.strings=c("ND","NA"))
+M126_50.file <- system.file("extdata", "M126_50.csv", package = "babar")
+M126_50.data <- read.csv(M126_50.file, header=TRUE, sep =",",
+                 na.strings=c("ND","NA"))
+plot(LmH_411.data, ylim=c(0,10))
+points(M126_50.data, pch=0)
+@
+
+The three hypotheses that we can use for testing the differences between two data curves are summarised in table \ref{tab:hyps}.
+
+\begin{table}[htp]
+\centering
+\def\arraystretch{1.5}
+\begin{tabular}{| c | c |}
+\hline
+Hypothesis name & Hypothesis \\
+\hline \hline
+H1 & ``data curves are replicates'' \\
+\hline
+H2 & ``data curves have same growth rate'' \\
+\hline
+H3 & ``all data curve parameters are different'' \\
+\hline
+\end{tabular}
+\caption{The three hypotheses available for testing in the function.}
+\label{tab:hyps}
+\end{table}
+
+We can use Bayesian analysis to fit curves to the combined data for each of the three different hypotheses using the \emph{Bayescompare} function. We begin by using the 4 parameter Baranyi model and inferring the noise level.
+
+Perform the analysis for hypothesis 1. This may take a couple of minutes or so to complete. Some typical output is shown below.
+
+<<runhyp1, tidy=TRUE>>=
+set.seed(11) ## for reproducibility
+results_H1 <- Bayescompare(LmH_411.data, M126_50.data, hyp="H1", model="Bar4par")
+@ 
+
+Plot the fitted curves alongside the data.
+
+<<extractandplothyp1, eval=FALSE>>=
+t1 <- results_H1$fit.t1; y1 <- results_H1$fit.y1mean;
+t2 <- results_H1$fit.t2; y2 <- results_H1$fit.y2mean
+lines(t1,y1,col="red",lwd=2)
+lines(t2,y2,col="blue",lwd=2)
+@
+
+Do the same for hypotheses 2 and 3 by running the relevant lines of the code.
+
+<<runhyp23, tidy=TRUE, results='hide'>>=
+set.seed(11) ## for reproducibility
+results_H2 <- Bayescompare(LmH_411.data, M126_50.data, hyp="H2", model="Bar4par")
+set.seed(11) ## for reproducibility
+results_H3 <- Bayescompare(LmH_411.data, M126_50.data, hyp="H3", model="Bar4par")
+@ 
+
+Now that we have the results, we can compare the three hypotheses, but first let's just check what the curves look like from hypothesis 2 --- ``data curves have same growth rate''.
+
+<<extractandplothyp2>>=
+t1 <- results_H2$fit.t1; y1 <- results_H2$fit.y1mean
+t2 <- results_H2$fit.t2; y2 <- results_H2$fit.y2mean
+plot(LmH_411.data, ylim=c(0,10))
+points(M126_50.data, pch=0)
+lines(t1,y1,col="red",lwd=2)
+lines(t2,y2,col="blue",lwd=2)
+@
+
+Extract the log evidences for the three hypotheses by running the relevant lines, for example as shown below.
+
+<<logevidencehyp1>>=
+logevidence_H1 <- results_H1$logevidence
+logevidence_H2 <- results_H2$logevidence
+logevidence_H3 <- results_H3$logevidence
+@
+
+Calculate and print the results for the Bayes' factor for hypothesis 1 versus hypothesis 2. The results can again be interpreted using table 2 on worksheet 1.
+
+<<BayesH1vsH2, echo=1>>=
+Bayes <- exp(logevidence_H1)/exp(logevidence_H2)
+cat("Bayes' factor for first vs. second hypothesis = ", Bayes, '\n')
+cat("Log Bayes' factor = ", log(Bayes), '\n')
+@
+
+Try changing the hypotheses that we are comparing (by changing the hypothesis names) to see how the Bayes' factor changes. Which is the preferred hypothesis? To what degree is it preferred over the second most likely hypothesis?
+
+
+%% \subsection{Extension: plotting posterior samples}
+
+%% The last section of \emph{example2.R} again plots the curves fitted by the posterior parameter samples alongside the combined data and the two curves fitted using the mean values of the parameter samples.
+
+%% \begin{itemize}
+
+%% \item Run the lines in the section \emph{``Plot the curves fitted by posterior samples''} to plot the posterior curves for hypothesis 3.
+
+%% \item Try changing the hypothesis for the results that we plot to hypothesis 1 and 2 in turn to see how the plot changes in each case.
+
+%% \end{itemize}
+
+%% \section{Comparing two data curves with two points}
+
+% Matthew to write about t-test equivalent? TODO
+
+%% Next we will consider experimental data with just two data points.
+
+%% \begin{itemize}
+
+%% \item Uncomment and run the lines to import and plot the data \emph{Tas1387.csv} and \emph{B174\_Ah.csv}.
+
+%% <<loadandplottwopoints, include=FALSE>>=
+%% data1 <-read.csv("data/Tas1387.csv",header=TRUE,sep=",",
+%%                  na.strings=c("ND","NA"))
+%% data2 <-read.csv("data/B174_Ah.csv",header=TRUE,sep=",",
+%%                  na.strings=c("ND","NA"))
+%% plot(data1,ylim=c(0,10))
+%% points(data2,pch=0)
+%% @
+
+%% \end{itemize}
+
+%% Since we only have two data points we now use the linear model and let the noise level be prescribed at 0.3.
+
+%% \begin{itemize}
+
+%% \item By uncommenting and running the relevant lines perform the analysis for each hypothesis using the linear model and again plot the fitted curves in each case. An example is shown below.
+
+%% <<runtwopoints, eval=FALSE>>=
+%% results_H1 <- Bayescompare(data1,data2,hyp="H1",model="linear",
+%%                            inf.sigma1=FALSE,inf.sigma2=FALSE)
+%% @
+
+%% \item Again extract the log evidences for each hypothesis and test using Bayes' factor to see which is the most likely, and by how much. You could also take a look at the posterior curve plots for this example (the y axis scale will again need to be changed for these).
+
+%% \end{itemize}
+
+%% \newpage
+%% {\color{white}.}
+
+%% Compile in R using knit("worksheet1.Rnw") the pdflatex the tex file (ignore warnings and check output first)
+
+\end{document}

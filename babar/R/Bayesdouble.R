@@ -4,7 +4,7 @@
 # (c) Lydia Rickett
 ########################################################################
 
-.logll <- function(params,par.no,modelfunc,model,dataset1,dataset2,inc.nd1,inc.nd2,threshold1,threshold2,t.nd1,t.nd2,inf.sigma1,
+.logllDouble <- function(params,par.no,modelfunc,model,dataset1,dataset2,inc.nd1,inc.nd2,threshold1,threshold2,t.nd1,t.nd2,inf.sigma1,
                   inf.sigma2,sigma1,sigma2,hyp,transformParams,mumax.prior1,mumax.prior2) {
   
   t1 <- dataset1$t1; y1 <- dataset1$y1
@@ -94,7 +94,7 @@
   return (llhood)
 }
 
-.generateTransform <- function(dataset1,dataset2,par.no,model,inc.nd1,inc.nd2,inf.sigma1,inf.sigma2,hyp,
+generateTransformDouble <- function(dataset1,dataset2,par.no,model,inc.nd1,inc.nd2,inf.sigma1,inf.sigma2,hyp,
                               mumax.prior1,mu.mean1,mu.sd1,mumax.prior2,mu.mean2,mu.sd2) {
   
   t1 <- dataset1$t1; t2 <- dataset2$t2; y1 <- dataset1$y1; y2 <- dataset2$y2
@@ -596,10 +596,10 @@ Bayescompare <- function
   tol <- 0.1 # Set the termination tolerance
 
   # Define transformed priors and log likelihood function
-  transformParams <- .generateTransform(dataset1,dataset2,par.no,model,inc.nd1,inc.nd2,inf.sigma1,inf.sigma2,hyp,
+  transformParams <- generateTransformDouble(dataset1,dataset2,par.no,model,inc.nd1,inc.nd2,inf.sigma1,inf.sigma2,hyp,
                                        mumax.prior1,mu.mean1,mu.sd1,mumax.prior2,mu.mean2,mu.sd2)
   logllfun <- function(params) { 
-    return(.logll(params,par.no,modelfunc,model,dataset1,dataset2,inc.nd1,inc.nd2,threshold1,threshold2,t.nd1,t.nd2,inf.sigma1,
+    return(.logllDouble(params,par.no,modelfunc,model,dataset1,dataset2,inc.nd1,inc.nd2,threshold1,threshold2,t.nd1,t.nd2,inf.sigma1,
                  inf.sigma2,sigma1,sigma2,hyp,transformParams,mumax.prior1,mumax.prior2))
   }
   

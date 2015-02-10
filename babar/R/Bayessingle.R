@@ -4,7 +4,7 @@
 # (c) Lydia Rickett
 ########################################################################
 
-.logll <- function(params,par.no,modelfunc,model,dataset,inc.nd,threshold,t.nd,inf.sigma,sigma,transformParams,mumax.prior) {
+.logllSingle <- function(params,par.no,modelfunc,model,dataset,inc.nd,threshold,t.nd,inf.sigma,sigma,transformParams,mumax.prior) {
   # To compute the log likelihood
   
   t <- dataset$t; y <- dataset$y
@@ -47,7 +47,7 @@
   return (llhood)
 }
 
-.babar.generateTransform <- function(dataset,par.no,model,inc.nd,inf.sigma,mumax.prior,mu.mean,mu.sd) {
+generateTransformSingle <- function(dataset,par.no,model,inc.nd,inf.sigma,mumax.prior,mu.mean,mu.sd) {
   # A wrap around to include other input
   
   t <- dataset$t; y <- dataset$y
@@ -394,9 +394,9 @@ Bayesfit <- function
   tol <- 0.1 # Set the termination tolerance
   
   # Define transformed priors and log likelihood function
-  transformParams <- .babar.generateTransform(dataset,par.no,model,inc.nd,inf.sigma,mumax.prior,mu.mean,mu.sd)
+  transformParams <- generateTransformSingle(dataset,par.no,model,inc.nd,inf.sigma,mumax.prior,mu.mean,mu.sd)
   logllfun <- function(params) {
-    return(.logll(params,par.no,modelfunc,model,dataset,inc.nd,threshold,t.nd,inf.sigma,sigma,transformParams,mumax.prior))
+    return(.logllSingle(params,par.no,modelfunc,model,dataset,inc.nd,threshold,t.nd,inf.sigma,sigma,transformParams,mumax.prior))
   }
   
   # Call the nested sampling routine, which returns the posterior, log evidence & error, logweights and parameter means 

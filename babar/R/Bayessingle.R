@@ -47,7 +47,7 @@
   return (llhood)
 }
 
-.generateTransform <- function(dataset,par.no,model,inc.nd,inf.sigma,mumax.prior,mu.mean,mu.sd) {
+.babar.generateTransform <- function(dataset,par.no,model,inc.nd,inf.sigma,mumax.prior,mu.mean,mu.sd) {
   # A wrap around to include other input
   
   t <- dataset$t; y <- dataset$y
@@ -394,7 +394,7 @@ Bayesfit <- function
   tol <- 0.1 # Set the termination tolerance
   
   # Define transformed priors and log likelihood function
-  transformParams <- .generateTransform(dataset,par.no,model,inc.nd,inf.sigma,mumax.prior,mu.mean,mu.sd)
+  transformParams <- .babar.generateTransform(dataset,par.no,model,inc.nd,inf.sigma,mumax.prior,mu.mean,mu.sd)
   logllfun <- function(params) {
     return(.logll(params,par.no,modelfunc,model,dataset,inc.nd,threshold,t.nd,inf.sigma,sigma,transformParams,mumax.prior))
   }

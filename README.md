@@ -1,6 +1,10 @@
 # BaBaR - Bayesian Bacterial growth curve analysis in R
 
-This is the code repository for the babar package.
+This is the code repository for the babar package. For examples of use, see:
+
+* [Fitting a growth curve with babar ](http://cdn.rawgit.com/JIC-CSB/babar/master/babar/vignettes/worksheet1.pdf)
+* [Comparing two growth curves with babar ](http://cdn.rawgit.com/JIC-CSB/babar/master/babar/vignettes/worksheet2.pdf)
+* [Comparing distibutions with nested sampling](http://cdn.rawgit.com/JIC-CSB/babar/master/doc/comparing_distributions.html)
 
 ## Building and installing
 

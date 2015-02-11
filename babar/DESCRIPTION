@@ -7,4 +7,5 @@ Author: Lydia Rickett, Matthew Hartley, Richard Morris and Nick Pullen
 Maintainer: Matthew Hartley <Matthew.Hartley@jic.ac.uk>
 Description: This package is designed to use nested sampling (a Bayesian analysis technique) to compare possible models for bacterial growth curves, as well as extracting parameters.
 License: GPL-2
-Depends: knitr
+Suggests: knitr, R.rsp
+VignetteBuilder: knitr, R.rsp

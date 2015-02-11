@@ -1,28 +1,43 @@
-library(babar)
-
-
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Comparing distriubtions with nested sampling}
+-->
 # Comparing distributions with nested sampling
 
-#A common problem in the analysis of experimental data
+A common problem in the analysis of experimental data is deciding when 
+
+```{r}
+library(babar)
+```
+
+
 
 # Let's first generate some data. We'll set a number of samples:
 
+```{r}
 n.samples <- 500
+```
 
 # Then set two different means and standard deviations:
 
+```{r}
 sd.1 <- 2
 mean.1 <- 0
 
 sd.2 <- 2
 mean.2 <- 1
+```{r}
 
 # Now we'll generate three sets of samples. Two have the same mean and
 # standard deviation and the third is different.
 
+```{r}
 data.a <- rnorm(n.samples, mean.1, sd.1)
 data.b <- rnorm(n.samples, mean.1, sd.1)
 data.c <- rnorm(n.samples, mean.2, sd.2)
+```
 
+```{r}
 compareDistributions(data.a, data.b)
 compareDistributions(data.a, data.c)
+```

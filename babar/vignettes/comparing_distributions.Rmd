@@ -1,24 +1,31 @@
 <!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Comparing distriubtions with nested sampling}
+%\VignetteEngine{knitr::docco_linear}
+%\VignetteIndexEntry{Comparing distributions with nested sampling}
 -->
-# Comparing distributions with nested sampling
+## Comparing distributions with nested sampling
 
-A common problem in the analysis of experimental data is deciding when 
+A common problem in the analysis of experimental data is deciding whether two sets of
+data samples represent the same underlying process (for example, when deciding whether
+a particular treatment has had an effect). One way to do this is by using a t-test. However,
+we can get use nested sampling to solve this problem instead. 
+
+### Loading the package
+
+Firstly, we load the package:
 
 ```{r}
 library(babar)
 ```
 
+### Setting conditions
 
-
-# Let's first generate some data. We'll set a number of samples:
+Then, we'll generate some data. We'll set a number of samples:
 
 ```{r}
 n.samples <- 500
 ```
 
-# Then set two different means and standard deviations:
+and set two different means (and a common standard deviation):
 
 ```{r}
 sd.1 <- 2
@@ -26,10 +33,12 @@ mean.1 <- 0
 
 sd.2 <- 2
 mean.2 <- 1
-```{r}
+```
 
-# Now we'll generate three sets of samples. Two have the same mean and
-# standard deviation and the third is different.
+### Generating data
+
+Now we'll generate three sets of samples. Two have the same mean and
+standard deviation and the third is different:
 
 ```{r}
 data.a <- rnorm(n.samples, mean.1, sd.1)
@@ -37,7 +46,37 @@ data.b <- rnorm(n.samples, mean.1, sd.1)
 data.c <- rnorm(n.samples, mean.2, sd.2)
 ```
 
+### Plotting the data
+
+Let's look at the data:
+
+```{r}
+par(mfrow=c(1, 3))
+hist(data.a, col='blue')
+hist(data.b, col='green')
+hist(data.c, col='red')
+```
+
+### Comparing the data
+
+Now we can use nested sampling. Here, we use a convenience function that will compare the
+evidence for the two models:
+
+1. The data samples are drawn from the same normal distribution (same mean and standard deviation).
+2. The data are from two different normal distributions (the mean and standard deviations).
+
+The function works by calculating the evidence for each model and returning the difference. Firstly,
+we can look at the evidence that the first two sets of samples are from the same distribution:
+
 ```{r}
 compareDistributions(data.a, data.b)
+```
+
+By the Jeffrey's scale, this is substantial evidence in favour. Comparing the first and third:
+
+```{r}
 compareDistributions(data.a, data.c)
 ```
+
+We see that the evidence is strongly against the two sets of samples being from the same distribution
+(the correct result, given that their means differ).

@@ -252,6 +252,4 @@ $-\infty$ to $0.1$ & Strong against \\
 %% \newpage
 %% {\color{white}.}
 
-%% Compile in R using knit("worksheet1.Rnw")
-
 \end{document}

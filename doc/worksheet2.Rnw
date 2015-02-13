@@ -180,6 +180,4 @@ Try changing the hypotheses that we are comparing (by changing the hypothesis na
 %% \newpage
 %% {\color{white}.}
 
-%% Compile in R using knit("worksheet1.Rnw") the pdflatex the tex file (ignore warnings and check output first)
-
 \end{document}

@@ -48,3 +48,11 @@ Code functions are documented using inlinedocs. To rebuild the documentation:
     library(inlinedocs)
     package.skeleton.dx('babar')
 
+## Generating the vignettes
+
+Compile in R using 
+
+    knit("worksheet1.Rnw")
+
+then run `pdflatex` (twice) on the resulting `.tex` file.
+Generally you can ignore the warnings if the PDF looks fine.

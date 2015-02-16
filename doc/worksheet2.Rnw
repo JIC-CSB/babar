@@ -128,6 +128,41 @@ cat("Log Bayes' factor = ", log(Bayes), '\n')
 
 Try changing the hypotheses that we are comparing (by changing the hypothesis names) to see how the Bayes' factor changes. Which is the preferred hypothesis? To what degree is it preferred over the second most likely hypothesis?
 
+\section{Making use of prior knowledge when comparing curves}
+
+Next we will demonstrate how to make use of prior knowledge to detect small differences in growth rate. First import and plot the two \emph{Escherichia coli} data curves, \emph{EcBook16\_22\_c.csv} and \emph{EcGB\_20\_b.csv}, using the below commands.
+
+<<loadandplot2curves, eval=FALSE>>=
+EcBook16_22_c.file <- system.file("extdata", "EcBook16_22_c.csv", package = "babar")
+EcBook16_22_c.data <- read.csv(EcBook16_22_c.file, header=TRUE, sep =",",
+                         na.strings=c("ND","NA"))
+EcGB_20_b.file <- system.file("extdata", "EcGB_20_b.csv", package = "babar")
+EcGB_20_b.data <- read.csv(EcGB_20_b.file, header=TRUE, sep =",",
+                         na.strings=c("ND","NA"))
+
+plot(EcBook16_22_b.data,xlim=c(0,60),ylim=c(2,10))
+points(EcGB_20_b.data,pch=0)
+@
+
+Note how the two curves look to have quite similar growth rates. We will use prior knowledge from one replicate curve at the same temperature and pH when fitting the growth rate for each of the two curves. We can do this using the following commands.
+
+<<runprior, eval=FALSE>>=
+results_pri_H2 <- Bayescompare(EcBook16_22_c.data, EcGB_20_b.data, hyp = "H2",
+                               model = "Bar4par",
+                               mumax.prior1="Gaussian",mumax.prior2="Gaussian",
+                               mu.mean1=0.180,mu.mean2=0.203,
+                               mu.sd1=0.0235,mu.sd2=0.0172)
+results_pri_H3 <- Bayescompare(EcBook16_22_c.data, EcGB_20_b.data, hyp = "H3",
+                               model = "Bar4par",
+                               mumax.prior1="Gaussian",mumax.prior2="Gaussian",
+                               mu.mean1=0.180,mu.mean2=0.203,
+                               mu.sd1=0.0235,mu.sd2=0.0172)
+@
+
+Next, extract the log evidences for each hypothesis and calculate the Bayes' factor as we did before. It is best to run the analysis a number of times and calculate the average Bayes' factor. This is because of the variability in the stochastic algorithm due to differences in the random seed. You will see that using this technique we can pick up on subtle differences in growth rate. These are the sorts of subtle differences that are undetectable by other statistical testing methods.
+
+How do our results compare with the case where we do not use prior knowledge i.e. use a uniform prior for the growth rate? We note that we can also use the same commands to improve our results with the \emph{Bayesfit} function.
+
 
 %% \subsection{Extension: plotting posterior samples}
 

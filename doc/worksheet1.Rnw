@@ -202,24 +202,21 @@ Bar6par & $y_0$, $y_{max}$, $\mu_{max}$, $\lambda$, $\nu$, $m$ \\
 \def\arraystretch{1.5}
 \begin{tabular}{| c | c |}
 \hline
-Bayes' factor & Strength of evidence for/against first model or hypothesis \\
-\hline \hline
-$10$ to $\infty$ & Strong for \\
-\hdashline[1pt/5pt]
-$3$ to $10$ & Substantial for \\
- \hdashline[1pt/5pt]
-$1$ to $3$ & Barely worth mentioning for \\
- \hdashline
-$1/3$ to $1$ & Barely worth mentioning against \\
-\hdashline[1pt/5pt]
-$0.1$ to $1/3$ & Substantial against \\
-\hdashline[1pt/5pt]
-$-\infty$ to $0.1$ & Strong against \\
+$2\ln\mathcal B_{12}$ & Evidence against $H_2$\\
+\hline
+$0$ to $2$ & Hardly worth mentioning\\
+$2$ to $6$ & Has some substance\\
+$6$ to $10$ & Strong\\
+$> 10$ & Very strong\\
 \hline
 \end{tabular}
-\caption{The regions of Jeffreys' scale for interpreting the Bayes' factor.}
+\caption{Jeffreys' scale for interpreting the Bayes' factor for hypothesis $1$ over hypothesis $2$, $\mathcal B_{12}$.
+         A grading of decisiveness of evidence to support or reject the hypothesis $H_2$.
+         If the log-Bayes factor is negative it can trivially be reversed to provide evidence against the competing hypothesis.
+}
 \label{tab:Jeffreys}
 \end{table}
+
 %% \begin{tabular}{| c | c |}
 %%     \hline
 %%     $2\ln\mathcal B_{12}$ & Evidence against $H_2$\\

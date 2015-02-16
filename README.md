@@ -50,9 +50,13 @@ Code functions are documented using inlinedocs. To rebuild the documentation:
 
 ## Generating the vignettes
 
-Compile in R using 
+Compile in R using:
 
     knit("worksheet1.Rnw")
+
+or from the shell:
+
+    R -e 'library(knitr); knit("doc/worksheet1.Rnw");'
 
 then run `pdflatex` (twice) on the resulting `.tex` file.
 Generally you can ignore the warnings if the PDF looks fine.

@@ -2,8 +2,8 @@
 
 This is the code repository for the babar package. For examples of use, see:
 
-* [Fitting a growth curve with babar ](http://cdn.rawgit.com/JIC-CSB/babar/master/babar/vignettes/worksheet1.pdf)
-* [Comparing two growth curves with babar ](http://cdn.rawgit.com/JIC-CSB/babar/master/babar/vignettes/worksheet2.pdf)
+* [Fitting a growth curve with babar ](http://cdn.rawgit.com/JIC-CSB/babar/12b4d1edfce38850ebea160fe785173c0d293ccd/babar/vignettes/worksheet1.pdf)
+* [Comparing two growth curves with babar ](http://cdn.rawgit.com/JIC-CSB/babar/12b4d1edfce38850ebea160fe785173c0d293ccd/babar/vignettes/worksheet2.pdf)
 * [Comparing distibutions with nested sampling](http://cdn.rawgit.com/JIC-CSB/babar/master/doc/comparing_distributions.html)
 
 ## Building and installing

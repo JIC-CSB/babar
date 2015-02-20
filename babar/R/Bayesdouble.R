@@ -94,7 +94,7 @@
   return (llhood)
 }
 
-generateTransformDouble <- function(dataset1,dataset2,par.no,model,inc.nd1,inc.nd2,inf.sigma1,inf.sigma2,hyp,
+.generateTransformDouble <- function(dataset1,dataset2,par.no,model,inc.nd1,inc.nd2,inf.sigma1,inf.sigma2,hyp,
                               mumax.prior1,mu.mean1,mu.sd1,mumax.prior2,mu.mean2,mu.sd2) {
   
   t1 <- dataset1$t1; t2 <- dataset2$t2; y1 <- dataset1$y1; y2 <- dataset2$y2
@@ -445,7 +445,7 @@ generateTransformDouble <- function(dataset1,dataset2,par.no,model,inc.nd1,inc.n
   ### Returns: the dataset minus undetected values, (t,y), and list of times of undetected values, t.nd
 }
 
-Bayescompare <- function
+Bayescompare <- structure(function
   ### Perform Bayesian analysis for comparing two bacterial growth curves using the Baranyi model.
   (
   data1,
@@ -481,8 +481,10 @@ Bayescompare <- function
   mu.mean2=NULL,
   ### The means to be used when using a Gaussian or Cauchy prior.
   mu.sd1=NULL,
-  mu.sd2=NULL
+  mu.sd2=NULL,
   ### The standard deviations to be used when using a Gaussian or Cauchy prior.
+  tol=0.1
+  ### The termination tolerance for nested sampling
 ) {
 
   # Setup (converting to natural log scale for use in the model)
@@ -593,10 +595,10 @@ Bayescompare <- function
 
   # Perform nested sampling
 
-  tol <- 0.1 # Set the termination tolerance
+  #tol <- 0.1 # Set the termination tolerance
 
   # Define transformed priors and log likelihood function
-  transformParams <- generateTransformDouble(dataset1,dataset2,par.no,model,inc.nd1,inc.nd2,inf.sigma1,inf.sigma2,hyp,
+  transformParams <- .generateTransformDouble(dataset1,dataset2,par.no,model,inc.nd1,inc.nd2,inf.sigma1,inf.sigma2,hyp,
                                        mumax.prior1,mu.mean1,mu.sd1,mumax.prior2,mu.mean2,mu.sd2)
   logllfun <- function(params) { 
     return(.logllDouble(params,par.no,modelfunc,model,dataset1,dataset2,inc.nd1,inc.nd2,threshold1,threshold2,t.nd1,t.nd2,inf.sigma1,
@@ -781,4 +783,14 @@ Bayescompare <- function
   ### fit.y1mean and fit.y2mean: Vectors of fitted model points, y1 and y2, using the mean of the posterior parameter samples in the  
   ###                            model.
   
-}
+}, ex=function() {
+  LmH_411.file <- system.file("extdata", "LmH_411.csv", package = "babar")
+  LmH_411.data <- read.csv(LmH_411.file, header=TRUE, sep =",",
+                           na.strings=c("ND","NA"))
+  M126_50.file <- system.file("extdata", "M126_50.csv", package = "babar")
+  M126_50.data <- read.csv(M126_50.file, header=TRUE, sep =",",
+                           na.strings=c("ND","NA"))
+
+  results_H1 <- Bayescompare(LmH_411.data, M126_50.data, hyp="H1", model="linear", tol=100)
+})
+

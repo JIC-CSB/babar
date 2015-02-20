@@ -16,4 +16,7 @@
 
 
 
-
+\examples{
+samples <- UniformPrior(runif(1000), -5, 5)
+summary(samples)
+}

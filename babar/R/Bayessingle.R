@@ -47,7 +47,7 @@
   return (llhood)
 }
 
-generateTransformSingle <- function(dataset,par.no,model,inc.nd,inf.sigma,mumax.prior,mu.mean,mu.sd) {
+.generateTransformSingle <- function(dataset,par.no,model,inc.nd,inf.sigma,mumax.prior,mu.mean,mu.sd) {
   # A wrap around to include other input
   
   t <- dataset$t; y <- dataset$y
@@ -299,7 +299,7 @@ generateTransformSingle <- function(dataset,par.no,model,inc.nd,inf.sigma,mumax.
   ### Returns: the dataset minus undetected values, (t,y), and list of times of undetected values, t.nd
 }
 
-Bayesfit <- function
+Bayesfit <- structure(function
   ### Perform Bayesian analysis for fitting a single bacterial growth curve using the Baranyi model.
   (data,
   ### A datafile of the curve to be fitted. This should consist of two columns, the first for time and second for logc. 
@@ -321,8 +321,10 @@ Bayesfit <- function
   ### will be used). If "Gaussian" or "Cauchy" are specified, mu.mean and mu.sd should be given. 
   mu.mean=NULL,
   ### The mean to be used when using a Gaussian or Cauchy prior.
-  mu.sd=NULL
+  mu.sd=NULL,
   ### The standard deviation to be used when using a Gaussian or Cauchy prior.
+  tol=0.1
+  ### The termination tolerance for the nested sampling
 ) {
 
   # Setup (converting to natural log scale for use in the model)
@@ -391,10 +393,10 @@ Bayesfit <- function
 
   # Perform nested sampling
 
-  tol <- 0.1 # Set the termination tolerance
+  #tol <- 0.1 # Set the termination tolerance
   
   # Define transformed priors and log likelihood function
-  transformParams <- generateTransformSingle(dataset,par.no,model,inc.nd,inf.sigma,mumax.prior,mu.mean,mu.sd)
+  transformParams <- .generateTransformSingle(dataset,par.no,model,inc.nd,inf.sigma,mumax.prior,mu.mean,mu.sd)
   logllfun <- function(params) {
     return(.logllSingle(params,par.no,modelfunc,model,dataset,inc.nd,threshold,t.nd,inf.sigma,sigma,transformParams,mumax.prior))
   }
@@ -514,4 +516,10 @@ Bayesfit <- function
   ###
   ### fit.ymean: A vector of fitted model points, y, using the mean of the posterior parameter samples in the model.
   
-}
+}, ex=function() {
+  B092_1.file <- system.file("extdata", "B092_1.csv", package = "babar")
+  B092_1.data <- read.csv(B092_1.file, header=TRUE, sep=",",
+                          na.strings=c("ND","NA"))
+  results_linear <- Bayesfit(B092_1.data,model="linear",inf.sigma=FALSE,tol=10)
+})
+

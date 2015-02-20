@@ -1,6 +1,5 @@
 export(nestedSampling)
 export(Bayesfit)
 export(Bayescompare)
-export(UniformPrior)
-export(GaussianPrior)
 export(compareDistributions)
+exportPattern("*Prior")

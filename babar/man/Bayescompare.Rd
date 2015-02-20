@@ -6,7 +6,7 @@
     inc.nd1 = FALSE, inc.nd2 = FALSE, sigma1 = 0.3, sigma2 = 0.3, 
     threshold1 = NULL, threshold2 = NULL, mumax.prior1 = "Uniform", 
     mumax.prior2 = "Uniform", mu.mean1 = NULL, mu.mean2 = NULL, 
-    mu.sd1 = NULL, mu.sd2 = NULL)}
+    mu.sd1 = NULL, mu.sd2 = NULL, tol = 0.1)}
 \arguments{
   \item{data1}{
 }
@@ -41,6 +41,7 @@ default "Uniform" will be used). If "Gaussian" or "Cauchy" are specified for eit
   \item{mu.sd1}{
 }
   \item{mu.sd2}{The standard deviations to be used when using a Gaussian or Cauchy prior.}
+  \item{tol}{The termination tolerance for nested sampling}
 }
 
 \value{Returns: 
@@ -76,4 +77,13 @@ model.}
 
 
 
+\examples{
+LmH_411.file <- system.file("extdata", "LmH_411.csv", package = "babar")
+LmH_411.data <- read.csv(LmH_411.file, header=TRUE, sep =",",
+                         na.strings=c("ND","NA"))
+M126_50.file <- system.file("extdata", "M126_50.csv", package = "babar")
+M126_50.data <- read.csv(M126_50.file, header=TRUE, sep =",",
+                         na.strings=c("ND","NA"))
 
+results_H1 <- Bayescompare(LmH_411.data, M126_50.data, hyp="H1", model="linear", tol=100)
+}

@@ -4,7 +4,7 @@
 \description{Perform Bayesian analysis for fitting a single bacterial growth curve using the Baranyi model.}
 \usage{Bayesfit(data, model, inf.sigma = TRUE, inc.nd = FALSE, sigma = 0.3, 
     threshold = NULL, mumax.prior = "Uniform", mu.mean = NULL, 
-    mu.sd = NULL)}
+    mu.sd = NULL, tol = 0.1)}
 \arguments{
   \item{data}{A datafile of the curve to be fitted. This should consist of two columns, the first for time and second for logc. 
 The bacterial concentration should be given in log_10 cfu and there should be at least 2 data points (the first of which 
@@ -19,6 +19,7 @@ specified (or the default value of sigma, 0.3, will be used).}
 will be used). If "Gaussian" or "Cauchy" are specified, mu.mean and mu.sd should be given. }
   \item{mu.mean}{The mean to be used when using a Gaussian or Cauchy prior.}
   \item{mu.sd}{The standard deviation to be used when using a Gaussian or Cauchy prior.}
+  \item{tol}{The termination tolerance for the nested sampling}
 }
 
 \value{Returns: 
@@ -53,4 +54,9 @@ fit.ymean: A vector of fitted model points, y, using the mean of the posterior p
 
 
 
-
+\examples{
+B092_1.file <- system.file("extdata", "B092_1.csv", package = "babar")
+B092_1.data <- read.csv(B092_1.file, header=TRUE, sep=",",
+                        na.strings=c("ND","NA"))
+results_linear <- Bayesfit(B092_1.data,model="linear",inf.sigma=FALSE,tol=10)
+}

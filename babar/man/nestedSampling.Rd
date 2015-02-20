@@ -44,4 +44,12 @@ entropy: The information --- the natural logarithmic measure of the prior-to-pos
 
 
 
+\examples{
+transform <- function(params) {
+  tParams = numeric(length=length(params))
+  tParams[1] = GaussianPrior(params[1], mu, sigma)
+  tParams[2] = UniformPrior(params[2], 0, 2 * sigma)
+  return(tParams)
+}
 
+}

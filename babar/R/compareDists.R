@@ -32,7 +32,7 @@
   return(llf)
 }
 
-compareDistributions <- function(
+compareDistributions <- structure(function(
 ### Compare two sets of normally distributed samples using nested sampling,
 ### to determine whether they have the same mean and variance.
   data.first,
@@ -65,4 +65,8 @@ compareDistributions <- function(
   return(evidence.same - evidence.different)
   ### Bayes factor for the hypothesis that the distributions have the same mean and variance
   ### versus the hypothesis that they have different means and variances
-}
+},ex=function() {
+    data.a <- rnorm(10, 1, 1)
+    data.b <- rnorm(10, 5, 1)
+    compareDistributions(data.a, data.b)
+})

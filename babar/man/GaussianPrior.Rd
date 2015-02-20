@@ -16,4 +16,7 @@
 
 
 
-
+\examples{
+samples <- GaussianPrior(runif(100), 5, 1)
+summary(samples)
+}

@@ -144,7 +144,15 @@
   ###    new.values: a vector of the new parameter values after the step
 }
 
-ballExplore <- function(current.values, steps, llMin, llFun) {
+ballExplore <- structure(function
+### Explore around the current values in a sphere in parameter space
+(current.values,
+### Vector of current parameter values
+ steps,
+### Vector of steps for current parameters
+ llMin,
+ llFun
+ ) {
   
   msub <- 20
   m <- 5
@@ -168,7 +176,7 @@ ballExplore <- function(current.values, steps, llMin, llFun) {
   steps <- pmax(steps, 0.01)## Feel this should perhaps alyways just depend on steps
   
   return(list(new.values=ret$new.values, new.steps=steps, new.ll=llFun(ret$new.values)))
-}
+})
 
 .explore <- function(current.values, steps, llMin, llFun) {
   # Explore parameter space around supplied point
@@ -234,7 +242,7 @@ ballExplore <- function(current.values, steps, llMin, llFun) {
   ###   A vector of values drawn from the uniform distribution
 }
 
-nestedSampling <- function
+nestedSampling <- structure(function
   ### Perform nested sampling for the given model (expressed through the log
   ### likelihood function).
   (llFun,
@@ -412,7 +420,15 @@ nestedSampling <- function
   ### parameterVariances: A vector of the variance of each parameter, length = no. of parameters.
   ###
   ### entropy: The information --- the natural logarithmic measure of the prior-to-posterior shrinkage.
-}
+}, ex=function() {
+  transform <- function(params) {
+    tParams = numeric(length=length(params))
+    tParams[1] = GaussianPrior(params[1], mu, sigma)
+    tParams[2] = UniformPrior(params[2], 0, 2 * sigma)
+    return(tParams)
+  }
+
+})
 
 .staircaseSampling = function(
   ### Generate a set of equally weighted posterior samples from the output of nested sampling  

@@ -17,4 +17,8 @@ versus the hypothesis that they have different means and variances}
 
 
 
-
+\examples{
+data.a <- rnorm(10, 1, 1)
+data.b <- rnorm(10, 5, 1)
+compareDistributions(data.a, data.b)
+}

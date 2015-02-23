@@ -6,9 +6,8 @@ function add_dontrun {
     FILENAME=$1
     STATEMENT=$2
 
-    sed "/$STATEMENT/i \
-    \\dontrun{" $FILENAME | sed "/$STATEMENT/a \
-    }" 
+sed "/$STATEMENT/i \\\\\dontrun{" $FILENAME | sed "/$STATEMENT/a \
+}" 
 }
 
 add_dontrun $BAYESCOMPARE results_H1 > .newfile

@@ -85,5 +85,7 @@ M126_50.file <- system.file("extdata", "M126_50.csv", package = "babar")
 M126_50.data <- read.csv(M126_50.file, header=TRUE, sep =",",
                          na.strings=c("ND","NA"))
 
+\dontrun{
 results_H1 <- Bayescompare(LmH_411.data, M126_50.data, hyp="H1", model="linear", tol=100)
+}
 }

@@ -58,5 +58,7 @@ fit.ymean: A vector of fitted model points, y, using the mean of the posterior p
 B092_1.file <- system.file("extdata", "B092_1.csv", package = "babar")
 B092_1.data <- read.csv(B092_1.file, header=TRUE, sep=",",
                         na.strings=c("ND","NA"))
+\dontrun{
 results_linear <- Bayesfit(B092_1.data,model="linear",inf.sigma=FALSE,tol=10)
+}
 }
